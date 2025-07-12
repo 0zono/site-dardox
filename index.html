@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Procurado</title>
   <style>
+    /* Estilos originais da sua página */
     body {
       margin: 0;
       padding: 0;
@@ -40,11 +41,30 @@
       padding: 10px;
       border-bottom: 1px solid #444;
     }
+
+    /* --- CSS PARA O EFEITO DE TINTA --- */
+    #paint-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at top left, hsl(0, 0%, 100%), hsl(0, 0%, 92%));
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.7s ease-in-out;
+      z-index: 9999;
+    }
+
+    #paint-overlay.painted {
+      opacity: 1;
+      pointer-events: auto;
+    }
   </style>
 </head>
 <body>
   <h1>Você viu esse homem?</h1>
-  <img src="Screenshot 2025-07-11 114538.png" alt="Imagem do homem procurado" />
+  <img src="procurado.png" alt="Imagem do homem procurado" />
 
   <ul>
     <li>Assassinato</li>
@@ -56,7 +76,7 @@
     <li>Extorsão</li>
     <li>Lesão corporal grave</li>
     <li>Tráfico de drogas</li>
-    <li>Sexy</li>
+    <li>sexy</li>
     <li>Sequestro e cárcere privado</li>
     <li>Fraude</li>
     <li>Falsificação de documentos</li>
@@ -78,5 +98,15 @@
     <li>Injúria racial</li>
     <li>Estelionato</li>
   </ul>
+
+  <div id="paint-overlay"></div>
+
+  <script>
+    const paintOverlay = document.getElementById('paint-overlay');
+
+    document.addEventListener('click', function() {
+      paintOverlay.classList.add('painted');
+    });
+  </script>
 </body>
 </html>
