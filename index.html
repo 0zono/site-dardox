@@ -82,18 +82,50 @@
       top: 100%;
       transform: translateX(-50%);
       transition: top 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+      border: 3px solid #5D4037;
+      border-radius: 10px;
+      overflow: hidden;
     }
 
     .mole img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      border-radius: 10px;
-      border: 3px solid #5D4037;
+    }
+
+    .mole.placeholder {
+      background: #8D6E63;
+      color: white;
+      font-size: 12px;
+      text-align: center;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .mole.up {
       top: 20%;
+    }
+
+    .mole.hit {
+      animation: moleHit 0.6s ease-out;
+    }
+
+    @keyframes moleHit {
+      0% {
+        transform: translateX(-50%) scale(1);
+      }
+      50% {
+        transform: translateX(-50%) scale(1.2) rotate(10deg);
+        filter: brightness(0.5) saturate(2);
+      }
+      100% {
+        transform: translateX(-50%) scale(1);
+        top: 100%;
+        filter: brightness(1) saturate(1);
+      }
     }
 
     .hammer {
@@ -148,6 +180,31 @@
       box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     }
 
+    .btn.start:hover {
+      background: #45a049;
+    }
+
+    .impact-effect {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+      pointer-events: none;
+      animation: impactRipple 0.4s ease-out;
+    }
+
+    @keyframes impactRipple {
+      0% {
+        transform: scale(0);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
     .game-over {
       display: none;
       position: fixed;
@@ -164,6 +221,39 @@
 
     .game-over.show {
       display: block;
+      animation: gameOverShow 0.5s ease-out;
+    }
+
+    @keyframes gameOverShow {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    .points-popup {
+      position: absolute;
+      color: #FFD700;
+      font-weight: bold;
+      font-size: 24px;
+      pointer-events: none;
+      z-index: 1500;
+      animation: pointsFloat 1s ease-out;
+    }
+
+    @keyframes pointsFloat {
+      0% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
     }
 
     @media (max-width: 600px) {
@@ -188,6 +278,15 @@
 
       .hammer {
         display: none;
+      }
+
+      .game-stats {
+        gap: 20px;
+      }
+
+      .stat {
+        padding: 10px 15px;
+        font-size: 16px;
       }
     }
   </style>
@@ -230,49 +329,73 @@
     const customImageSrc = 'Screenshot 2025-07-11 114538.png';
     const holes = [];
 
+    // Initialize game board
     for (let i = 0; i < 9; i++) {
       const hole = document.createElement('div');
       hole.className = 'mole-hole';
       const mole = document.createElement('div');
-      mole.className = 'mole';
-      const img = new Image();
-      img.src = customImageSrc;
-      img.onload = () => mole.appendChild(img);
+      mole.className = 'mole placeholder';
+      mole.textContent = 'Custom Image';
       mole.dataset.index = i;
       hole.appendChild(mole);
       gameBoard.appendChild(hole);
       holes.push(mole);
     }
 
+    // Initialize custom images
+    function initializeCustomImages() {
+      holes.forEach(mole => {
+        const img = new Image();
+        img.onload = function() {
+          mole.innerHTML = `<img src="${customImageSrc}" alt="Custom Mole">`;
+          mole.classList.remove('placeholder');
+        };
+        img.onerror = function() {
+          console.log('Custom image not found, using placeholder');
+          mole.textContent = 'Custom Image';
+        };
+        img.src = customImageSrc;
+      });
+    }
+
+    // Initialize images
+    initializeCustomImages();
+
+    // Hammer follow cursor
     document.addEventListener('mousemove', e => {
       hammer.style.left = (e.clientX - 30) + 'px';
       hammer.style.top = (e.clientY - 50) + 'px';
     });
 
+    // Handle clicks and touches
     document.addEventListener('click', handleStrike);
-    document.addEventListener('touchstart', e => handleStrike(e.touches[0]));
+    document.addEventListener('touchstart', e => {
+      e.preventDefault();
+      handleStrike(e.touches[0]);
+    });
 
     function handleStrike(e) {
       if (!gameActive) return;
-      const x = e.clientX, y = e.clientY;
+      
+      const x = e.clientX || e.pageX;
+      const y = e.clientY || e.pageY;
       totalClicks++;
+      
       hammerStrike(x, y);
 
-      let hit = false;
+      let hitMole = false;
       holes.forEach(mole => {
         const rect = mole.getBoundingClientRect();
         if (mole.classList.contains('up') &&
           x >= rect.left && x <= rect.right &&
           y >= rect.top && y <= rect.bottom) {
-          mole.classList.remove('up');
-          score += 10;
-          hits++;
-          hit = true;
-          scoreDisplay.textContent = score;
+          
+          hitMole = true;
+          whackMole(mole, x, y);
         }
       });
 
-      if (!hit) {
+      if (!hitMole) {
         misses++;
         missesDisplay.textContent = misses;
       }
@@ -280,7 +403,48 @@
 
     function hammerStrike(x, y) {
       hammer.classList.add('strike');
+      createImpactEffect(x, y);
       setTimeout(() => hammer.classList.remove('strike'), 300);
+    }
+
+    function createImpactEffect(x, y) {
+      const effect = document.createElement('div');
+      effect.className = 'impact-effect';
+      effect.style.left = (x - 20) + 'px';
+      effect.style.top = (y - 20) + 'px';
+      document.body.appendChild(effect);
+      
+      setTimeout(() => {
+        effect.remove();
+      }, 400);
+    }
+
+    function whackMole(mole, x, y) {
+      mole.classList.add('hit');
+      mole.classList.remove('up');
+      
+      hits++;
+      score += 10;
+      scoreDisplay.textContent = score;
+      
+      showPointsPopup(x, y, 10);
+      
+      setTimeout(() => {
+        mole.classList.remove('hit');
+      }, 600);
+    }
+
+    function showPointsPopup(x, y, points) {
+      const popup = document.createElement('div');
+      popup.className = 'points-popup';
+      popup.textContent = `+${points}`;
+      popup.style.left = x + 'px';
+      popup.style.top = y + 'px';
+      document.body.appendChild(popup);
+      
+      setTimeout(() => {
+        popup.remove();
+      }, 1000);
     }
 
     function startGame() {
@@ -317,6 +481,9 @@
     }
 
     function resetGame() {
+      gameActive = false;
+      clearInterval(gameTimer);
+      clearInterval(moleTimer);
       score = 0;
       misses = 0;
       timeLeft = 60;
@@ -326,8 +493,10 @@
       missesDisplay.textContent = misses;
       timeDisplay.textContent = timeLeft;
       gameOverDiv.classList.remove('show');
+      holes.forEach(m => m.classList.remove('up', 'hit'));
     }
 
+    // Prevent double-tap zoom on mobile
     let lastTouchEnd = 0;
     document.addEventListener('touchend', function (event) {
       const now = new Date().getTime();
