@@ -161,8 +161,8 @@ h1 {
 
 .letter {
   display: grid;
-  gap: 38svh;
-  padding: 6svh 18px 32svh;
+  gap: 24svh;
+  padding: 6svh 18px 28svh;
 }
 
 .reveal {
@@ -185,7 +185,7 @@ h1 {
 .final-card {
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 22px 20px;
+  padding: 20px 18px;
   background: var(--panel);
   box-shadow: var(--shadow);
   backdrop-filter: blur(18px);
@@ -195,9 +195,22 @@ h1 {
 .final-card p {
   color: #fff3ea;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(1.32rem, 6.2vw, 2rem);
-  line-height: 1.36;
+  font-size: clamp(1.18rem, 5.35vw, 1.78rem);
+  line-height: 1.42;
   text-wrap: pretty;
+}
+
+.final-card {
+  display: grid;
+  gap: 14px;
+}
+
+.love-card p {
+  color: var(--gold);
+  font-size: clamp(1.9rem, 10vw, 3.1rem);
+  line-height: 1.05;
+  text-align: center;
+  text-shadow: 0 0 22px rgba(255, 154, 169, 0.34);
 }
 
 strong {
@@ -207,7 +220,7 @@ strong {
 
 .spotlight {
   display: grid;
-  min-height: 62svh;
+  min-height: 56svh;
   place-items: center;
   text-align: center;
 }
