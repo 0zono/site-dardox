@@ -1,510 +1,94 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-  <title>Stomp-a-Dardox</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      cursor: none;
-      overflow: hidden;
-      touch-action: manipulation;
-      -webkit-user-select: none;
-      user-select: none;
-    }
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#100d1f">
+    <title>Feliz aniversário, amor</title>
+    <meta
+      name="description"
+      content="Uma carta digital de aniversário feita com amor."
+    >
+    <link rel="preload" href="assets/birthday-bg.png" as="image">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="bg" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="progress" aria-hidden="true"><span></span></div>
 
-    .game-container {
-      text-align: center;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 30px;
-      border-radius: 20px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-    }
+    <button class="sound-toggle" type="button" aria-label="Ativar som">
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <path d="M4 9v6h4l5 4V5L8 9H4z"></path>
+        <path class="sound-wave" d="M16 8.5a5 5 0 0 1 0 7"></path>
+        <path class="sound-wave" d="M18.5 6a8.5 8.5 0 0 1 0 12"></path>
+      </svg>
+    </button>
 
-    .game-header h1 {
-      font-size: 2.5em;
-      margin: 0;
-      color: white;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    }
+    <main>
+      <section class="hero">
+        <p class="eyebrow">uma carta digital</p>
+        <h1>Feliz aniversário, meu amor</h1>
+        <p class="hint">toque no som e vai descendo devagar</p>
+      </section>
 
-    .game-stats {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      margin: 30px 0;
-      flex-wrap: wrap;
-    }
+      <section class="letter" aria-label="Carta de aniversário">
+        <article class="reveal card">
+          <p>
+            Geralmente eu te mandaria uma <strong>MENSAGEM</strong> com um
+            textão enorme, mas visto que eu to aí seria um pouco estranho eu
+            pedir um tempinho pra digitar algo pra vc, e eu sou péssimo com
+            cartas pq minha caligrafia é horrível.
+          </p>
+        </article>
 
-    .stat {
-      background: rgba(255,255,255,0.2);
-      padding: 15px 25px;
-      border-radius: 15px;
-      color: white;
-      font-size: 18px;
-      font-weight: bold;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-    }
+        <article class="reveal card">
+          <p>
+            Então pra te desejar um felizíssimo aniversário, amor da minha vida,
+            estou escrevendo essa carta digital, essa confissão de amor e
+            desejos de felicidade no seu dia especial.
+          </p>
+        </article>
 
-    .game-board {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      max-width: 500px;
-      margin: 0 auto;
-    }
+        <article class="reveal spotlight">
+          <p>Agora finalmente...</p>
+          <h2>FELIZ ANIVERSÁRIO!!!</h2>
+        </article>
 
-    .mole-hole {
-      width: 120px;
-      height: 120px;
-      background: radial-gradient(circle, #3E2723 0%, #1B0000 100%);
-      border-radius: 50%;
-      position: relative;
-      border: 5px solid #8D6E63;
-      box-shadow: inset 0 10px 20px rgba(0,0,0,0.8);
-      overflow: hidden;
-    }
+        <article class="reveal card">
+          <p>
+            meu amor você não faz ideia do quanto você significa pra mim, mais
+            que o mundo, mais que as estrelas no céu e mais que os astros que
+            as orbitam.
+          </p>
+        </article>
 
-    .mole {
-      width: 80px;
-      height: 80px;
-      position: absolute;
-      left: 50%;
-      top: 100%;
-      transform: translateX(-50%);
-      transition: top 0.3s ease;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-      border: 3px solid #5D4037;
-      border-radius: 10px;
-      overflow: hidden;
-    }
+        <article class="reveal card">
+          <p>
+            Você me dá motivação pra levantar e dar 100% em mais um dia porque
+            no próximo a gente vai se ver, ou logo tem um plano, logo tem
+            alguma coisinha que vai fazer meu dia/semana/mês/ano e você como
+            um todo faz a minha vida.
+          </p>
+        </article>
 
-    .mole img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+        <article class="reveal card">
+          <p>
+            Eu desejo nada mais que felicidade nesse seu dia, e eu espero que a
+            gente se divirta bastante junto amor...
+          </p>
+        </article>
 
-    .mole.placeholder {
-      background: #8D6E63;
-      color: white;
-      font-size: 12px;
-      text-align: center;
-      padding: 5px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+        <article class="reveal final-card">
+          <p>
+            Bem, na verdade essa mensagem ainda não acabou, neste instante o
+            raphael do futuro, eu, devo estar voltando com algo em mãos e agora
+            sim, vamos pro seu presente.
+          </p>
+        </article>
+      </section>
+    </main>
 
-    .mole.up {
-      top: 20%;
-    }
-
-    .mole.hit {
-      animation: moleHit 0.6s ease-out;
-    }
-
-    @keyframes moleHit {
-      0% {
-        transform: translateX(-50%) scale(1);
-      }
-      50% {
-        transform: translateX(-50%) scale(1.2) rotate(10deg);
-        filter: brightness(0.5) saturate(2);
-      }
-      100% {
-        transform: translateX(-50%) scale(1);
-        top: 100%;
-        filter: brightness(1) saturate(1);
-      }
-    }
-
-    .hammer {
-      position: fixed;
-      width: 60px;
-      height: 60px;
-      pointer-events: none;
-      z-index: 1000;
-      font-size: 50px;
-      transform-origin: bottom center;
-      transition: transform 0.1s ease;
-    }
-
-    .hammer.strike {
-      animation: hammerStrike 0.3s ease-out;
-    }
-
-    @keyframes hammerStrike {
-      0% { transform: rotate(-30deg) scale(1); }
-      50% { transform: rotate(15deg) scale(1.2); }
-      100% { transform: rotate(-10deg) scale(1); }
-    }
-
-    .control-panel {
-      margin-top: 30px;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      background: #FF6B6B;
-      color: white;
-      border: none;
-      padding: 15px 25px;
-      font-size: 16px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .btn.start {
-      background: #4CAF50;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    }
-
-    .btn.start:hover {
-      background: #45a049;
-    }
-
-    .impact-effect {
-      position: absolute;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
-      pointer-events: none;
-      animation: impactRipple 0.4s ease-out;
-    }
-
-    @keyframes impactRipple {
-      0% {
-        transform: scale(0);
-        opacity: 1;
-      }
-      100% {
-        transform: scale(4);
-        opacity: 0;
-      }
-    }
-
-    .game-over {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0,0,0,0.9);
-      color: white;
-      padding: 40px;
-      border-radius: 20px;
-      text-align: center;
-      z-index: 2000;
-    }
-
-    .game-over.show {
-      display: block;
-      animation: gameOverShow 0.5s ease-out;
-    }
-
-    @keyframes gameOverShow {
-      from {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0.8);
-      }
-      to {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-      }
-    }
-
-    .points-popup {
-      position: absolute;
-      color: #FFD700;
-      font-weight: bold;
-      font-size: 24px;
-      pointer-events: none;
-      z-index: 1500;
-      animation: pointsFloat 1s ease-out;
-    }
-
-    @keyframes pointsFloat {
-      0% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(-50px);
-      }
-    }
-
-    @media (max-width: 600px) {
-      .game-board {
-        gap: 10px;
-      }
-
-      .mole-hole {
-        width: 80px;
-        height: 80px;
-      }
-
-      .mole {
-        width: 60px;
-        height: 60px;
-      }
-
-      .btn {
-        padding: 10px 15px;
-        font-size: 14px;
-      }
-
-      .hammer {
-        display: none;
-      }
-
-      .game-stats {
-        gap: 20px;
-      }
-
-      .stat {
-        padding: 10px 15px;
-        font-size: 16px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="game-container">
-    <div class="game-header">
-      <h1>🔨 Stomp-a-Dardox</h1>
-    </div>
-    <div class="game-stats">
-      <div class="stat">Stomps: <span id="score">0</span></div>
-      <div class="stat">Tempo: <span id="time">60</span>s</div>
-      <div class="stat">Erros: <span id="misses">0</span></div>
-    </div>
-    <div class="game-board" id="gameBoard"></div>
-    <div class="control-panel">
-      <button class="btn start" onclick="startGame()">Comece</button>
-      <button class="btn" onclick="resetGame()">Reset</button>
-    </div>
-  </div>
-  <div id="hammer" class="hammer">🔨</div>
-  <div class="game-over" id="gameOver">
-    <h2>Acabou!</h2>
-    <p>Pontos: <span id="finalScore">0</span></p>
-    <p>Precisão: <span id="accuracy">0%</span></p>
-    <button class="btn start" onclick="resetGame()">Jogar de novo</button>
-  </div>
-  <script>
-    const hammer = document.getElementById('hammer');
-    const gameBoard = document.getElementById('gameBoard');
-    const scoreDisplay = document.getElementById('score');
-    const timeDisplay = document.getElementById('time');
-    const missesDisplay = document.getElementById('misses');
-    const gameOverDiv = document.getElementById('gameOver');
-    const finalScoreDisplay = document.getElementById('finalScore');
-    const accuracyDisplay = document.getElementById('accuracy');
-
-    let score = 0, misses = 0, timeLeft = 60, totalClicks = 0, hits = 0, gameActive = false;
-    let gameTimer, moleTimer;
-    const customImageSrc = 'Screenshot 2025-07-11 114538.png';
-    const holes = [];
-
-    // Initialize game board
-    for (let i = 0; i < 9; i++) {
-      const hole = document.createElement('div');
-      hole.className = 'mole-hole';
-      const mole = document.createElement('div');
-      mole.className = 'mole placeholder';
-      mole.textContent = 'Custom Image';
-      mole.dataset.index = i;
-      hole.appendChild(mole);
-      gameBoard.appendChild(hole);
-      holes.push(mole);
-    }
-
-    // Initialize custom images
-    function initializeCustomImages() {
-      holes.forEach(mole => {
-        const img = new Image();
-        img.onload = function() {
-          mole.innerHTML = `<img src="${customImageSrc}" alt="Custom Mole">`;
-          mole.classList.remove('placeholder');
-        };
-        img.onerror = function() {
-          console.log('Custom image not found, using placeholder');
-          mole.textContent = 'Custom Image';
-        };
-        img.src = customImageSrc;
-      });
-    }
-
-    // Initialize images
-    initializeCustomImages();
-
-    // Hammer follow cursor
-    document.addEventListener('mousemove', e => {
-      hammer.style.left = (e.clientX - 30) + 'px';
-      hammer.style.top = (e.clientY - 50) + 'px';
-    });
-
-    // Handle clicks and touches
-    document.addEventListener('click', handleStrike);
-    document.addEventListener('touchstart', e => {
-      e.preventDefault();
-      handleStrike(e.touches[0]);
-    });
-
-    function handleStrike(e) {
-      if (!gameActive) return;
-      
-      const x = e.clientX || e.pageX;
-      const y = e.clientY || e.pageY;
-      totalClicks++;
-      
-      hammerStrike(x, y);
-
-      let hitMole = false;
-      holes.forEach(mole => {
-        const rect = mole.getBoundingClientRect();
-        if (mole.classList.contains('up') &&
-          x >= rect.left && x <= rect.right &&
-          y >= rect.top && y <= rect.bottom) {
-          
-          hitMole = true;
-          whackMole(mole, x, y);
-        }
-      });
-
-      if (!hitMole) {
-        misses++;
-        missesDisplay.textContent = misses;
-      }
-    }
-
-    function hammerStrike(x, y) {
-      hammer.classList.add('strike');
-      createImpactEffect(x, y);
-      setTimeout(() => hammer.classList.remove('strike'), 300);
-    }
-
-    function createImpactEffect(x, y) {
-      const effect = document.createElement('div');
-      effect.className = 'impact-effect';
-      effect.style.left = (x - 20) + 'px';
-      effect.style.top = (y - 20) + 'px';
-      document.body.appendChild(effect);
-      
-      setTimeout(() => {
-        effect.remove();
-      }, 400);
-    }
-
-    function whackMole(mole, x, y) {
-      mole.classList.add('hit');
-      mole.classList.remove('up');
-      
-      hits++;
-      score += 10;
-      scoreDisplay.textContent = score;
-      
-      showPointsPopup(x, y, 10);
-      
-      setTimeout(() => {
-        mole.classList.remove('hit');
-      }, 600);
-    }
-
-    function showPointsPopup(x, y, points) {
-      const popup = document.createElement('div');
-      popup.className = 'points-popup';
-      popup.textContent = `+${points}`;
-      popup.style.left = x + 'px';
-      popup.style.top = y + 'px';
-      document.body.appendChild(popup);
-      
-      setTimeout(() => {
-        popup.remove();
-      }, 1000);
-    }
-
-    function startGame() {
-      resetGame();
-      gameActive = true;
-      gameTimer = setInterval(() => {
-        timeLeft--;
-        timeDisplay.textContent = timeLeft;
-        if (timeLeft <= 0) endGame();
-      }, 1000);
-
-      moleTimer = setInterval(spawnMoles, 1000);
-    }
-
-    function spawnMoles() {
-      holes.forEach(m => m.classList.remove('up'));
-      const shuffled = [...holes].sort(() => 0.5 - Math.random());
-      const count = Math.floor(Math.random() * 2) + 1;
-      shuffled.slice(0, count).forEach(mole => {
-        mole.classList.add('up');
-        setTimeout(() => mole.classList.remove('up'), 1500);
-      });
-    }
-
-    function endGame() {
-      gameActive = false;
-      clearInterval(gameTimer);
-      clearInterval(moleTimer);
-      holes.forEach(m => m.classList.remove('up'));
-      finalScoreDisplay.textContent = score;
-      const accuracy = totalClicks > 0 ? Math.round((hits / totalClicks) * 100) : 0;
-      accuracyDisplay.textContent = accuracy + '%';
-      gameOverDiv.classList.add('show');
-    }
-
-    function resetGame() {
-      gameActive = false;
-      clearInterval(gameTimer);
-      clearInterval(moleTimer);
-      score = 0;
-      misses = 0;
-      timeLeft = 60;
-      totalClicks = 0;
-      hits = 0;
-      scoreDisplay.textContent = score;
-      missesDisplay.textContent = misses;
-      timeDisplay.textContent = timeLeft;
-      gameOverDiv.classList.remove('show');
-      holes.forEach(m => m.classList.remove('up', 'hit'));
-    }
-
-    // Prevent double-tap zoom on mobile
-    let lastTouchEnd = 0;
-    document.addEventListener('touchend', function (event) {
-      const now = new Date().getTime();
-      if (now - lastTouchEnd <= 300) {
-        event.preventDefault();
-      }
-      lastTouchEnd = now;
-    }, false);
-  </script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
