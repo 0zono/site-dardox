@@ -6,6 +6,12 @@ let audioContext;
 let soundEnabled = false;
 let jingleTimer;
 
+const lockHorizontalScroll = () => {
+  if (window.scrollX !== 0) {
+    window.scrollTo(0, window.scrollY);
+  }
+};
+
 const initAudio = () => {
   if (!audioContext) {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -186,6 +192,8 @@ const observer = new IntersectionObserver(
 reveals.forEach((el) => observer.observe(el));
 updateProgress();
 window.addEventListener("scroll", updateProgress, { passive: true });
+window.addEventListener("scroll", lockHorizontalScroll, { passive: true });
+window.addEventListener("resize", lockHorizontalScroll);
 
 const syncToggleState = () => {
   toggles.forEach((toggle) => {
