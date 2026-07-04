@@ -18,12 +18,18 @@
 }
 
 html {
+  width: 100%;
+  max-width: 100%;
   min-height: 100%;
   background: #100d1f;
+  overflow-x: hidden;
   scroll-behavior: smooth;
 }
 
 body {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
   min-height: 100%;
   margin: 0;
   color: var(--ink);
@@ -42,7 +48,6 @@ body {
   background:
     linear-gradient(180deg, rgba(11, 9, 23, 0.1), rgba(11, 9, 23, 0.9)),
     url("assets/birthday-bg.png") center / cover no-repeat;
-  transform: scale(1.02);
 }
 
 .grain {
@@ -146,15 +151,20 @@ body {
 }
 
 main {
-  width: min(100%, 560px);
+  width: min(100vw, 560px);
+  max-width: 100%;
   margin: 0 auto;
+  overflow-x: clip;
 }
 
 .hero {
   display: grid;
   min-height: 96svh;
   align-content: end;
-  padding: 56px 22px 16svh;
+  width: 100%;
+  min-width: 0;
+  padding: 56px max(18px, env(safe-area-inset-left)) 16svh
+    max(18px, env(safe-area-inset-right));
 }
 
 .eyebrow {
@@ -178,11 +188,13 @@ p {
 }
 
 h1 {
+  width: 100%;
   max-width: 11ch;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(3.4rem, 18vw, 5.9rem);
+  font-size: clamp(2.9rem, 16vw, 5.9rem);
   line-height: 0.91;
   letter-spacing: 0;
+  overflow-wrap: anywhere;
   text-wrap: balance;
   text-shadow: 0 12px 42px rgba(0, 0, 0, 0.58);
 }
@@ -196,10 +208,15 @@ h1 {
 .letter {
   display: grid;
   gap: 24svh;
-  padding: 6svh 18px 28svh;
+  width: 100%;
+  min-width: 0;
+  padding: 6svh max(16px, env(safe-area-inset-left)) 28svh
+    max(16px, env(safe-area-inset-right));
 }
 
 .reveal {
+  min-width: 0;
+  max-width: 100%;
   opacity: 0;
   transform: translateY(36px) scale(0.985);
   filter: blur(10px);
@@ -217,6 +234,9 @@ h1 {
 
 .card,
 .final-card {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 20px 18px;
@@ -227,10 +247,13 @@ h1 {
 
 .card p,
 .final-card p {
+  max-width: 100%;
   color: #fff3ea;
   font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(1.18rem, 5.35vw, 1.78rem);
   line-height: 1.42;
+  overflow-wrap: anywhere;
+  word-break: normal;
   text-wrap: pretty;
 }
 
@@ -268,12 +291,14 @@ strong {
 }
 
 h2 {
-  max-width: 8ch;
+  width: 100%;
+  max-width: 100%;
   color: var(--gold);
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(3.15rem, 18vw, 6.2rem);
+  font-size: clamp(2.6rem, 15vw, 6.2rem);
   line-height: 0.88;
   letter-spacing: 0;
+  overflow-wrap: anywhere;
   text-shadow:
     0 0 24px rgba(255, 154, 169, 0.44),
     0 18px 62px rgba(0, 0, 0, 0.7);
@@ -308,6 +333,26 @@ h2 {
   .compact-toggle {
     right: 26px;
     top: 26px;
+  }
+}
+
+@media (max-width: 360px) {
+  .hero {
+    padding-inline: 14px;
+  }
+
+  .letter {
+    padding-inline: 12px;
+  }
+
+  .card,
+  .final-card {
+    padding: 18px 15px;
+  }
+
+  .card p,
+  .final-card p {
+    font-size: clamp(1.08rem, 5vw, 1.35rem);
   }
 }
 
