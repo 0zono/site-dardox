@@ -1,9 +1,10 @@
-const toggle = document.querySelector(".sound-toggle");
+const toggles = [...document.querySelectorAll(".sound-toggle")];
 const progress = document.querySelector(".progress span");
 const reveals = [...document.querySelectorAll(".reveal")];
 
 let audioContext;
 let soundEnabled = false;
+let jingleTimer;
 
 const initAudio = () => {
   if (!audioContext) {
@@ -85,6 +86,37 @@ const chime = (notes, gainValue = 0.035) => {
   });
 };
 
+const romanticJingle = () => {
+  chime([261.63, 329.63, 392, 523.25], 0.014);
+  playTone({
+    frequency: 659.25,
+    duration: 0.9,
+    type: "sine",
+    gainValue: 0.012,
+    start: 0.42,
+    bend: 0.995,
+  });
+  playTone({
+    frequency: 392,
+    duration: 1.1,
+    type: "triangle",
+    gainValue: 0.01,
+    start: 0.58,
+    bend: 1.005,
+  });
+};
+
+const startJingle = () => {
+  if (jingleTimer) return;
+  romanticJingle();
+  jingleTimer = window.setInterval(romanticJingle, 5200);
+};
+
+const stopJingle = () => {
+  window.clearInterval(jingleTimer);
+  jingleTimer = undefined;
+};
+
 const soundMap = {
   typing: () => {
     playNoise({ duration: 0.035, gainValue: 0.012 });
@@ -155,14 +187,27 @@ reveals.forEach((el) => observer.observe(el));
 updateProgress();
 window.addEventListener("scroll", updateProgress, { passive: true });
 
-toggle.classList.add("is-muted");
-toggle.addEventListener("click", () => {
+const syncToggleState = () => {
+  toggles.forEach((toggle) => {
+    toggle.classList.toggle("is-muted", !soundEnabled);
+    toggle.classList.toggle("is-sound-on", soundEnabled);
+    toggle.setAttribute("aria-label", soundEnabled ? "Desativar som" : "Ativar som");
+
+    const label = toggle.querySelector("span");
+    if (label) label.textContent = soundEnabled ? "Trilha ligada" : "Ativar trilha";
+  });
+};
+
+syncToggleState();
+toggles.forEach((toggle) => toggle.addEventListener("click", () => {
   initAudio();
   soundEnabled = !soundEnabled;
-  toggle.classList.toggle("is-muted", !soundEnabled);
-  toggle.setAttribute("aria-label", soundEnabled ? "Desativar som" : "Ativar som");
+  syncToggleState();
 
   if (soundEnabled) {
+    startJingle();
     chime([392, 523.25, 659.25], 0.032);
+  } else {
+    stopJingle();
   }
-});
+}));
